@@ -88,13 +88,20 @@ function App({ movies }) {
   });
 
   uniqueOchtend = [...new Set(ochtendTitles)];
-  uniqueOchtend.map((el, i, array) => (array[i] = { title: el, times: [] }));
+  // uniqueOchtend.map((el, i, array) => (array[i] = { title: el, times: [] }));
 
   uniqueMiddag = [...new Set(middagTitles)];
-  uniqueMiddag.map((el, i, array) => (array[i] = { title: el, times: [] }));
+  // uniqueMiddag.map((el, i, array) => (array[i] = { title: el, times: [] }));
 
   uniqueAvond = [...new Set(avondTitles)];
-  uniqueAvond.map((el, i, array) => (array[i] = { title: el, times: [] }));
+  // uniqueAvond.map((el, i, array) => (array[i] = { title: el, times: [] }));
+
+  const addFieldsToUniqueArray = uniqueArray =>
+    uniqueArray.map((el, i, array) => (array[i] = { title: el, times: [] }));
+
+  addFieldsToUniqueArray(uniqueOchtend);
+  addFieldsToUniqueArray(uniqueMiddag);
+  addFieldsToUniqueArray(uniqueAvond);
 
   // every time film.title matches unique film title, add the start time to the unique film times array
   const combineStartTimes = (filmsArray, uniqueArray) => {
