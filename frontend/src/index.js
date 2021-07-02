@@ -144,6 +144,9 @@ function App({ movies }) {
 
   let datum = `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
 
+  // Reload page every 4 hours        1s     1m   1h   4h
+  setTimeout(() => window.location.reload(), 1000 * 60 * 60 * 8);
+
   // 11) Render JSX:
   return (
     <>
