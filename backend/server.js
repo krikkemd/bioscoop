@@ -59,7 +59,7 @@ const resolvers = {
         let dateUntil = '2021-07-04';
 
         const results = await fetch(
-          `https://dnk.podiumnederland.nl/mtTicketingAPI/performanceList?key=${process.env.API_KEY}&dateFrom=${dateFrom}&dateUntil=${dateUntil}`,
+          `https://dnk.podiumnederland.nl/mtTicketingAPI/performanceList?key=${process.env.API_KEY}&dateFrom=${today}&dateUntil=${today}`,
         );
         const movies = await results.json();
         // console.log(movies);

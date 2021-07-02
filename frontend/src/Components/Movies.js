@@ -1,23 +1,26 @@
 import React from 'react';
+import '../css/style.css';
 
 const Movies = ({ moviesArray, timeOfDay }) => {
   return (
     <div>
       {moviesArray.length > 0 && (
-        <>
-          <h2>FILMPROGRAMMA |</h2> {timeOfDay}
-        </>
+        <h2 className='heading-2 heading-2--movie'>
+          <span className='movie-lighter'>Filmprogramma |</span> {timeOfDay}
+        </h2>
       )}
-      {moviesArray.map(movie => (
-        <div key={movie.id}>
-          <div>{movie.title}</div>
-          <div>
-            {[...movie.times].length > 1
-              ? [...movie.times].toString().replace(',', ' | ')
-              : [...movie.times]}
-          </div>
-        </div>
-      ))}
+      <ul className='movies__beganegrond-list'>
+        {moviesArray.map(movie => (
+          <li className='movies__beganegrond-list-item' key={movie.id}>
+            <p className='movies__beganegrond-list-item-artiest'>{movie.title}</p>
+            <p className='movies__beganegrond-list-item-nummer'>
+              {[...movie.times].length > 1
+                ? [...movie.times].toString().replace(',', ' | ')
+                : [...movie.times]}
+            </p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

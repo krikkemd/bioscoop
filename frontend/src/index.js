@@ -1,6 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from '@apollo/client';
+import logo from './assets/dnk-logo.png';
+import backgroundMovie from './assets/cinema.mp4';
+import './css/style.css';
 
 // Components
 import Movies from './Components/Movies';
@@ -122,13 +125,51 @@ function App({ movies }) {
   let timeNum = t.getTime();
   console.log(timeNum);
 
+  let d = new Date();
+  let days = ['ZO', 'MA', 'DI', 'WO', 'DO', 'VR', 'ZA'];
+  let months = [
+    'Januari',
+    'Februari',
+    'Maart',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Augustus',
+    'September',
+    'Oktober',
+    'November',
+    'December',
+  ];
+
+  let datum = `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+
   // 11) Render JSX:
   return (
-    <div>
-      <h1>Bioscoop 🚀</h1>
-      <Movies moviesArray={uniqueOchtend} timeOfDay={'Ochtend'} />
-      <Movies moviesArray={uniqueMiddag} timeOfDay={'Middag'} />
-      <Movies moviesArray={uniqueAvond} timeOfDay={'Avond'} />
-    </div>
+    <>
+      <video id='myVideo' autoPlay loop muted>
+        <source src={backgroundMovie} type='video/mp4' />
+      </video>
+
+      <div className='container'>
+        <header className='header'>
+          <h1 className='heading-1'>Bioscoop</h1>
+          <div className='header__date'>{datum}</div>
+        </header>
+        <div class='zalen'></div>
+
+        <div className='movies'>
+          <Movies moviesArray={uniqueOchtend} timeOfDay={'Ochtend'} />
+          <Movies moviesArray={uniqueMiddag} timeOfDay={'Middag'} />
+          <Movies moviesArray={uniqueAvond} timeOfDay={'Avond'} />
+        </div>
+
+        <footer className='footer'>
+          <div className='dnk__logo'>
+            <img className='dnk__logo-img' src={logo} alt='DNK Logo' />
+          </div>
+        </footer>
+      </div>
+    </>
   );
 }
