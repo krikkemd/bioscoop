@@ -95,51 +95,70 @@ function App({ movies }) {
   uniqueAvond = [...new Set(avondTitles)];
   uniqueAvond.map((el, i, array) => (array[i] = { title: el, times: [] }));
 
+  const combineStartTimes = (filmsArray, uniqueArray) => {
+    for (let film of filmsArray) {
+      for (let el of uniqueArray) {
+        if (film.title === el.title) {
+          uniqueArray[uniqueArray.indexOf(el)].id = film.id;
+          uniqueArray[uniqueArray.indexOf(el)].times = [
+            ...uniqueArray[uniqueArray.indexOf(el)].times,
+            film.start,
+          ];
+        }
+      }
+    }
+  };
+
+  combineStartTimes(films, unique);
+  combineStartTimes(films, uniqueOchtend);
+  combineStartTimes(films, uniqueMiddag);
+  combineStartTimes(films, uniqueAvond);
+
   // every time film.title matches unique film title, add the start time to the unique film times array
-  for (let film of films) {
-    for (let el of unique) {
-      if (film.title === el.title) {
-        unique[unique.indexOf(el)].id = film.id;
-        unique[unique.indexOf(el)].times = [...unique[unique.indexOf(el)].times, film.start];
-      }
-    }
-  }
+  // for (let film of films) {
+  //   for (let el of unique) {
+  //     if (film.title === el.title) {
+  //       unique[unique.indexOf(el)].id = film.id;
+  //       unique[unique.indexOf(el)].times = [...unique[unique.indexOf(el)].times, film.start];
+  //     }
+  //   }
+  // }
 
-  for (let film of ochtend) {
-    for (let el of uniqueOchtend) {
-      if (film.title === el.title) {
-        uniqueOchtend[uniqueOchtend.indexOf(el)].id = film.id;
-        uniqueOchtend[uniqueOchtend.indexOf(el)].times = [
-          ...uniqueOchtend[uniqueOchtend.indexOf(el)].times,
-          film.start,
-        ];
-      }
-    }
-  }
+  // for (let film of ochtend) {
+  //   for (let el of uniqueOchtend) {
+  //     if (film.title === el.title) {
+  //       uniqueOchtend[uniqueOchtend.indexOf(el)].id = film.id;
+  //       uniqueOchtend[uniqueOchtend.indexOf(el)].times = [
+  //         ...uniqueOchtend[uniqueOchtend.indexOf(el)].times,
+  //         film.start,
+  //       ];
+  //     }
+  //   }
+  // }
 
-  for (let film of middag) {
-    for (let el of uniqueMiddag) {
-      if (film.title === el.title) {
-        uniqueMiddag[uniqueMiddag.indexOf(el)].id = film.id;
-        uniqueMiddag[uniqueMiddag.indexOf(el)].times = [
-          ...uniqueMiddag[uniqueMiddag.indexOf(el)].times,
-          film.start,
-        ];
-      }
-    }
-  }
+  // for (let film of middag) {
+  //   for (let el of uniqueMiddag) {
+  //     if (film.title === el.title) {
+  //       uniqueMiddag[uniqueMiddag.indexOf(el)].id = film.id;
+  //       uniqueMiddag[uniqueMiddag.indexOf(el)].times = [
+  //         ...uniqueMiddag[uniqueMiddag.indexOf(el)].times,
+  //         film.start,
+  //       ];
+  //     }
+  //   }
+  // }
 
-  for (let film of avond) {
-    for (let el of uniqueAvond) {
-      if (film.title === el.title) {
-        uniqueAvond[uniqueAvond.indexOf(el)].id = film.id;
-        uniqueAvond[uniqueAvond.indexOf(el)].times = [
-          ...uniqueAvond[uniqueAvond.indexOf(el)].times,
-          film.start,
-        ];
-      }
-    }
-  }
+  // for (let film of avond) {
+  //   for (let el of uniqueAvond) {
+  //     if (film.title === el.title) {
+  //       uniqueAvond[uniqueAvond.indexOf(el)].id = film.id;
+  //       uniqueAvond[uniqueAvond.indexOf(el)].times = [
+  //         ...uniqueAvond[uniqueAvond.indexOf(el)].times,
+  //         film.start,
+  //       ];
+  //     }
+  //   }
+  // }
 
   console.log(unique);
   // console.log(uniqueOchtend);
@@ -149,7 +168,7 @@ function App({ movies }) {
   // check current time vs film start time, rerender?
   const t = new Date();
   let time = t.toLocaleTimeString().slice(0, 5);
-  time = '15:30';
+  // time = '15:30';
   console.log(`time = ${time}`);
 
   let timeNum = t.getTime();
@@ -163,18 +182,9 @@ function App({ movies }) {
         <div key={movie.id}>
           <div>{movie.title}</div>
           <div>
-            {[...movie.times] < time ? (
-              'film is begonnen'
-            ) : (
-              <div>
-                {[...movie.times].length > 1
-                  ? [...movie.times].toString().replace(',', ' | ')
-                  : [...movie.times]}
-              </div>
-            )}
-            {/* {[...movie.times].length > 1
+            {[...movie.times].length > 1
               ? [...movie.times].toString().replace(',', ' | ')
-              : [...movie.times]} */}
+              : [...movie.times]}
           </div>
         </div>
       ))}
@@ -182,26 +192,18 @@ function App({ movies }) {
       {uniqueMiddag.map(movie => (
         <div key={movie.id}>
           <div>{movie.title}</div>
-          <div>
-            {movie.times.map((tijd, i, array) => (tijd < time ? 'film is begonnen' : tijd))}
-          </div>
-
-          {/* <div>
-            {[...movie.times].length > 1
-              ? [...movie.times].toString().replace(',', ' | ')
-              : [...movie.times]}
-          </div> */}
+          {[...movie.times].length > 1
+            ? [...movie.times].toString().replace(',', ' | ')
+            : [...movie.times]}
         </div>
       ))}
       <h2>Avond:</h2>
       {uniqueAvond.map(movie => (
         <div key={movie.id}>
           <div>{movie.title}</div>
-          <div>
-            {movie.times.map((tijd, i, array) => {
-              return tijd < time ? 'film is begonnen' : tijd;
-            })}
-          </div>
+          {[...movie.times].length > 1
+            ? [...movie.times].toString().replace(',', ' | ')
+            : [...movie.times]}
         </div>
       ))}
     </div>
