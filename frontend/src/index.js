@@ -159,7 +159,7 @@ function App({ movies }) {
           <h1 className='heading-1'>Bioscoop</h1>
           <div className='header__date'>{datum}</div>
         </header>
-        <div class='zalen'></div>
+        <div className='zalen'></div>
 
         <div className='movies'>
           <Movies moviesArray={uniqueOchtend} timeOfDay={'Ochtend'} />
