@@ -38,9 +38,10 @@ client
 
 // Component to render
 function App({ movies }) {
+  // Original incoming data
   console.log(movies);
 
-  // Movies is read only, make shallow copy
+  // Movies is read only, make shallow copy of incoming data
   let films = [...movies];
 
   let titles = [];
@@ -53,7 +54,7 @@ function App({ movies }) {
   let uniqueMiddag = [];
   let uniqueAvond = [];
 
-  // Sort by start time
+  // Sort films array by start time
   films = films.sort((a, b) => {
     return a.start < b.start ? -1 : a.start > b.start ? 1 : 0;
   });
@@ -95,6 +96,7 @@ function App({ movies }) {
   uniqueAvond = [...new Set(avondTitles)];
   uniqueAvond.map((el, i, array) => (array[i] = { title: el, times: [] }));
 
+  // every time film.title matches unique film title, add the start time to the unique film times array
   const combineStartTimes = (filmsArray, uniqueArray) => {
     for (let film of filmsArray) {
       for (let el of uniqueArray) {
@@ -110,60 +112,14 @@ function App({ movies }) {
   };
 
   combineStartTimes(films, unique);
-  combineStartTimes(films, uniqueOchtend);
-  combineStartTimes(films, uniqueMiddag);
-  combineStartTimes(films, uniqueAvond);
-
-  // every time film.title matches unique film title, add the start time to the unique film times array
-  // for (let film of films) {
-  //   for (let el of unique) {
-  //     if (film.title === el.title) {
-  //       unique[unique.indexOf(el)].id = film.id;
-  //       unique[unique.indexOf(el)].times = [...unique[unique.indexOf(el)].times, film.start];
-  //     }
-  //   }
-  // }
-
-  // for (let film of ochtend) {
-  //   for (let el of uniqueOchtend) {
-  //     if (film.title === el.title) {
-  //       uniqueOchtend[uniqueOchtend.indexOf(el)].id = film.id;
-  //       uniqueOchtend[uniqueOchtend.indexOf(el)].times = [
-  //         ...uniqueOchtend[uniqueOchtend.indexOf(el)].times,
-  //         film.start,
-  //       ];
-  //     }
-  //   }
-  // }
-
-  // for (let film of middag) {
-  //   for (let el of uniqueMiddag) {
-  //     if (film.title === el.title) {
-  //       uniqueMiddag[uniqueMiddag.indexOf(el)].id = film.id;
-  //       uniqueMiddag[uniqueMiddag.indexOf(el)].times = [
-  //         ...uniqueMiddag[uniqueMiddag.indexOf(el)].times,
-  //         film.start,
-  //       ];
-  //     }
-  //   }
-  // }
-
-  // for (let film of avond) {
-  //   for (let el of uniqueAvond) {
-  //     if (film.title === el.title) {
-  //       uniqueAvond[uniqueAvond.indexOf(el)].id = film.id;
-  //       uniqueAvond[uniqueAvond.indexOf(el)].times = [
-  //         ...uniqueAvond[uniqueAvond.indexOf(el)].times,
-  //         film.start,
-  //       ];
-  //     }
-  //   }
-  // }
+  combineStartTimes(ochtend, uniqueOchtend);
+  combineStartTimes(middag, uniqueMiddag);
+  combineStartTimes(avond, uniqueAvond);
 
   console.log(unique);
-  // console.log(uniqueOchtend);
+  console.log(uniqueOchtend);
   console.log(uniqueMiddag);
-  // console.log(uniqueAvond);
+  console.log(uniqueAvond);
 
   // check current time vs film start time, rerender?
   const t = new Date();
