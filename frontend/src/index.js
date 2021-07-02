@@ -38,12 +38,10 @@ client
 
 // Component to render
 function App({ movies }) {
-  // Original incoming data
+  // 1) Original incoming data
   console.log(movies);
 
-  // Movies is read only, make shallow copy of incoming data
-  let films = [...movies];
-
+  // 2) Initialize vars
   let titles = [];
   let ochtendTitles = [];
   let middagTitles = [];
@@ -54,56 +52,82 @@ function App({ movies }) {
   let uniqueMiddag = [];
   let uniqueAvond = [];
 
-  // Sort films array by start time
+  // 3) Movies is read only, make shallow copy of incoming data
+  let films = [...movies];
+
+  // 4) Sort films array by start times
   films = films.sort((a, b) => {
     return a.start < b.start ? -1 : a.start > b.start ? 1 : 0;
   });
 
-  // Push all titles into titles array
-  films.map(film => titles.push(film.title));
-
   console.log(films);
   console.log(titles);
 
-  // create 3 arrays depending on start times
+  // 5) Create 3 arrays depending on start times
   let ochtend = [...films.filter(film => film.start < '12:00')];
   let middag = [...films.filter(film => film.start > '12:00' && film.start < '18:00')];
   let avond = [...films.filter(film => film.start > '18:00')];
 
-  // Push all titles to arrays
+  // 6) Push all titles into titles arrays
+  films.map(film => titles.push(film.title));
   ochtend.map(film => ochtendTitles.push(film.title));
   middag.map(film => middagTitles.push(film.title));
   avond.map(film => avondTitles.push(film.title));
 
-  // console.log(ochtend);
-  // console.log(middag);
-  // console.log(avond);
-
-  // Create a new array with only unique titles
+  // 7) UNIQUE TITLES:
+  /* create arrays with unique titles only
+    [
+      0: "Pieter Konijn"
+      0: "Tom & Jerry"
+      0: "de Croods"
+    ] 
+  */
   unique = [...new Set(titles)];
-
-  // make objects out of unique array values, and add times array to every element inside unique
-  unique.map((el, i, array) => {
-    return (array[i] = { id: '', title: el, times: [] });
-  });
-
   uniqueOchtend = [...new Set(ochtendTitles)];
-  // uniqueOchtend.map((el, i, array) => (array[i] = { title: el, times: [] }));
-
   uniqueMiddag = [...new Set(middagTitles)];
-  // uniqueMiddag.map((el, i, array) => (array[i] = { title: el, times: [] }));
-
   uniqueAvond = [...new Set(avondTitles)];
-  // uniqueAvond.map((el, i, array) => (array[i] = { title: el, times: [] }));
 
-  const addFieldsToUniqueArray = uniqueArray =>
+  // 8) ADD TIMES ARRAY AND CONVERT TO OBJECT :
+  /* convert arrays with unique titles to objects, and add times array field: 
+    [
+      0: {title: "Pieter Konijn", times: []}
+      1: {title: "Tom & Jerry", times: []}
+      2: {title: "De Croods", times: []}
+    ]
+  */
+  const addTimesArray = uniqueArray =>
     uniqueArray.map((el, i, array) => (array[i] = { title: el, times: [] }));
 
-  addFieldsToUniqueArray(uniqueOchtend);
-  addFieldsToUniqueArray(uniqueMiddag);
-  addFieldsToUniqueArray(uniqueAvond);
+  addTimesArray(unique);
+  addTimesArray(uniqueOchtend);
+  addTimesArray(uniqueMiddag);
+  addTimesArray(uniqueAvond);
 
-  // every time film.title matches unique film title, add the start time to the unique film times array
+  // make objects out of unique array values, and add times array to every element inside unique
+  // unique.map((el, i, array) => {
+  //   return (array[i] = { id: '', title: el, times: [] });
+  // });
+
+  // 9) COMBINE START TIMES AND ADD ID
+  /* Every time film.title matches unique film title, add the start time to the unique film times array, also add ID
+  [
+      0: {
+          id: "10087691",
+          title: "Pieter Konijn", 
+          times: ["13:00"]
+        }
+      1: {
+          id: "10087693",
+          title: "Tom & Jerry", 
+          times: ["13:00"]
+        }
+      2: {
+          id: "10087643",
+          title: "De Croods", 
+          times: ["13:00", "15:45"]
+        }
+    ] 
+  */
   const combineStartTimes = (filmsArray, uniqueArray) => {
     for (let film of filmsArray) {
       for (let el of uniqueArray) {
