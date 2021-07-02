@@ -59,7 +59,8 @@ html {
   font-size: 3rem;
   text-transform: uppercase; }
   .heading-2--movie {
-    color: #008bbc; }
+    color: #008bbc;
+    padding-bottom: 4.5rem; }
 
 .heading-3 {
   font-size: 1.8rem;
