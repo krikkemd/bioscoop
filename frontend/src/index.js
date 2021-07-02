@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from '@apollo/client';
+import { addTimesArray, combineStartTimes } from './util/helperFunction';
 
 // Connect to appollo server
 const client = new ApolloClient({
@@ -39,6 +40,7 @@ client
 // Component to render
 function App({ movies }) {
   // 1) Original incoming data
+  console.log('Original Data:');
   console.log(movies);
 
   // 2) Initialize vars
@@ -59,9 +61,6 @@ function App({ movies }) {
   films = films.sort((a, b) => {
     return a.start < b.start ? -1 : a.start > b.start ? 1 : 0;
   });
-
-  console.log(films);
-  console.log(titles);
 
   // 5) Create 3 arrays depending on start times
   let ochtend = [...films.filter(film => film.start < '12:00')];
@@ -87,71 +86,28 @@ function App({ movies }) {
   uniqueMiddag = [...new Set(middagTitles)];
   uniqueAvond = [...new Set(avondTitles)];
 
-  // 8) ADD TIMES ARRAY AND CONVERT TO OBJECT :
-  /* convert arrays with unique titles to objects, and add times array field: 
-    [
-      0: {title: "Pieter Konijn", times: []}
-      1: {title: "Tom & Jerry", times: []}
-      2: {title: "De Croods", times: []}
-    ]
-  */
-  const addTimesArray = uniqueArray =>
-    uniqueArray.map((el, i, array) => (array[i] = { title: el, times: [] }));
-
+  // 8) ADD TIMES ARRAY AND CONVERT TO OBJECT:
   addTimesArray(unique);
   addTimesArray(uniqueOchtend);
   addTimesArray(uniqueMiddag);
   addTimesArray(uniqueAvond);
 
-  // make objects out of unique array values, and add times array to every element inside unique
-  // unique.map((el, i, array) => {
-  //   return (array[i] = { id: '', title: el, times: [] });
-  // });
-
   // 9) COMBINE START TIMES AND ADD ID
-  /* Every time film.title matches unique film title, add the start time to the unique film times array, also add ID
-  [
-      0: {
-          id: "10087691",
-          title: "Pieter Konijn", 
-          times: ["13:00"]
-        }
-      1: {
-          id: "10087693",
-          title: "Tom & Jerry", 
-          times: ["13:00"]
-        }
-      2: {
-          id: "10087643",
-          title: "De Croods", 
-          times: ["13:00", "15:45"]
-        }
-    ] 
-  */
-  const combineStartTimes = (filmsArray, uniqueArray) => {
-    for (let film of filmsArray) {
-      for (let el of uniqueArray) {
-        if (film.title === el.title) {
-          uniqueArray[uniqueArray.indexOf(el)].id = film.id;
-          uniqueArray[uniqueArray.indexOf(el)].times = [
-            ...uniqueArray[uniqueArray.indexOf(el)].times,
-            film.start,
-          ];
-        }
-      }
-    }
-  };
-
   combineStartTimes(films, unique);
   combineStartTimes(ochtend, uniqueOchtend);
   combineStartTimes(middag, uniqueMiddag);
   combineStartTimes(avond, uniqueAvond);
 
+  console.log('Processed data with all movies:');
   console.log(unique);
+  console.log('Processed data with morning movies:');
   console.log(uniqueOchtend);
+  console.log('Processed data with daytime movies:');
   console.log(uniqueMiddag);
+  console.log('Processed data with evening movies:');
   console.log(uniqueAvond);
 
+  // 10) TODO: IMPLEMENT SOME TIME BASED LOGIC
   // check current time vs film start time, rerender?
   const t = new Date();
   let time = t.toLocaleTimeString().slice(0, 5);
