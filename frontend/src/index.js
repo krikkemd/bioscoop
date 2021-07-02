@@ -97,7 +97,7 @@ function App({ movies }) {
   addTimesArray(uniqueMiddag);
   addTimesArray(uniqueAvond);
 
-  // 9) COMBINE START TIMES AND ADD ID
+  // 9) COMBINE START TIMES AND ADD ID:
   combineStartTimes(films, unique);
   combineStartTimes(ochtend, uniqueOchtend);
   combineStartTimes(middag, uniqueMiddag);
@@ -122,6 +122,7 @@ function App({ movies }) {
   let timeNum = t.getTime();
   console.log(timeNum);
 
+  // 11) Render JSX:
   return (
     <div>
       <h1>Bioscoop 🚀</h1>
