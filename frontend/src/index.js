@@ -1,6 +1,11 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from '@apollo/client';
+
+// Components
+import Movies from './Components/Movies';
+
+// Helper functions
 import { addTimesArray, combineStartTimes } from './util/helperFunction';
 
 // Connect to appollo server
@@ -120,35 +125,9 @@ function App({ movies }) {
   return (
     <div>
       <h1>Bioscoop 🚀</h1>
-      {uniqueOchtend.length > 0 && <h2>Ochtend:</h2>}
-      {uniqueOchtend.map(movie => (
-        <div key={movie.id}>
-          <div>{movie.title}</div>
-          <div>
-            {[...movie.times].length > 1
-              ? [...movie.times].toString().replace(',', ' | ')
-              : [...movie.times]}
-          </div>
-        </div>
-      ))}
-      <h2>Middag:</h2>
-      {uniqueMiddag.map(movie => (
-        <div key={movie.id}>
-          <div>{movie.title}</div>
-          {[...movie.times].length > 1
-            ? [...movie.times].toString().replace(',', ' | ')
-            : [...movie.times]}
-        </div>
-      ))}
-      <h2>Avond:</h2>
-      {uniqueAvond.map(movie => (
-        <div key={movie.id}>
-          <div>{movie.title}</div>
-          {[...movie.times].length > 1
-            ? [...movie.times].toString().replace(',', ' | ')
-            : [...movie.times]}
-        </div>
-      ))}
+      <Movies moviesArray={uniqueOchtend} timeOfDay={'Ochtend'} />
+      <Movies moviesArray={uniqueMiddag} timeOfDay={'Middag'} />
+      <Movies moviesArray={uniqueAvond} timeOfDay={'Avond'} />
     </div>
   );
 }
