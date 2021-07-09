@@ -1,7 +1,6 @@
-# bioscoop
+# bioscoop-agenda
+### Backend 
+apollo-server, graphql, node-fetch
 
-Apollo Server
-GraphQL
-Fetch
-Apollo Client
-React
+### Frontend
+apollo-client, react, node-sass
