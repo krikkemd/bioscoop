@@ -13,7 +13,7 @@ import { addTimesArray, combineStartTimes } from './util/helperFunction';
 
 // Connect to appollo server
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/',
+  uri: process.env.REACT_APP_APOLLO_SERVER_URL,
   cache: new InMemoryCache({
     addTypename: false,
   }),
@@ -61,6 +61,11 @@ function App({ movies }) {
   let uniqueOchtend = [];
   let uniqueMiddag = [];
   let uniqueAvond = [];
+
+  // Time colors:
+  const red = '#e73454';
+  const pink = '#e1617a';
+  const amber = '#bd2f46';
 
   // 3) Movies is read only, make shallow copy of incoming data
   let films = [...movies];
@@ -143,9 +148,10 @@ function App({ movies }) {
   ];
 
   let datum = `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+  console.log(`datum = ${datum}`);
 
   // Reload page every 4 hours        1s     1m   1h   4h
-  setTimeout(() => window.location.reload(), 1000 * 60 * 60 * 8);
+  setTimeout(() => window.location.reload(), 1000 * 60 * 60 * 4);
 
   // 11) Render JSX:
   return (
@@ -154,7 +160,10 @@ function App({ movies }) {
         <source src={backgroundMovie} type='video/mp4' />
       </video>
 
-      <div className='container'>
+      <div
+        className='container'
+        // style={{ cursor: 'none' }}
+      >
         <header className='header'>
           <h1 className='heading-1'>Bioscoop</h1>
           <div className='header__date'>{datum}</div>
@@ -162,9 +171,9 @@ function App({ movies }) {
         <div className='zalen'></div>
 
         <div className='movies'>
-          <Movies moviesArray={uniqueOchtend} timeOfDay={'Ochtend'} />
-          <Movies moviesArray={uniqueMiddag} timeOfDay={'Middag'} />
-          <Movies moviesArray={uniqueAvond} timeOfDay={'Avond'} />
+          <Movies moviesArray={uniqueOchtend} timeOfDay={'Ochtend'} timeColor={amber} />
+          <Movies moviesArray={uniqueMiddag} timeOfDay={'Middag'} timeColor={red} />
+          <Movies moviesArray={uniqueAvond} timeOfDay={'Avond'} timeColor={pink} />
         </div>
 
         <footer className='footer'>

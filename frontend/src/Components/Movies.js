@@ -1,7 +1,7 @@
 import React from 'react';
 import '../css/style.css';
 
-const Movies = ({ moviesArray, timeOfDay }) => {
+const Movies = ({ moviesArray, timeOfDay, timeColor }) => {
   return (
     <div>
       {moviesArray.length > 0 && (
@@ -13,7 +13,9 @@ const Movies = ({ moviesArray, timeOfDay }) => {
         {moviesArray.map(movie => (
           <li className='movies__beganegrond-list-item' key={movie.id}>
             <p className='movies__beganegrond-list-item-artiest'>{movie.title}</p>
-            <p className='movies__beganegrond-list-item-nummer'>
+            <p
+              className='movies__beganegrond-list-item-nummer'
+              style={{ backgroundColor: timeColor }}>
               {[...movie.times].length > 1
                 ? [...movie.times].toString().replace(',', ' | ')
                 : [...movie.times]}
