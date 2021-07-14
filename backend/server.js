@@ -1,4 +1,9 @@
-const { ApolloServer, gql } = require('apollo-server');
+const express = require('express');
+const cors = require('cors');
+const { ApolloServer, gql } = require('apollo-server-express');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
 const fetch = require('node-fetch');
 const dotenv = require('dotenv').config();
 
@@ -55,8 +60,8 @@ const resolvers = {
         console.log(d.toLocaleTimeString());
         let today = d.toISOString().slice(0, 10);
         console.log(`todays date = ${today}`);
-        let dateFrom = '2021-07-04';
-        let dateUntil = '2021-07-04';
+        let dateFrom = '2021-07-14';
+        let dateUntil = '2021-07-14';
 
         const results = await fetch(
           `https://dnk.podiumnederland.nl/mtTicketingAPI/performanceList?key=${process.env.API_KEY}&dateFrom=${today}&dateUntil=${today}`,
@@ -65,8 +70,10 @@ const resolvers = {
         // console.log(movies);
 
         return movies.performances.map(movie => {
-          movie.times = [];
-          return movie;
+          if (movie.eventType === 'Film') {
+            movie.times = [];
+            return movie;
+          }
         });
       } catch (e) {
         console.error(e);
@@ -77,9 +84,73 @@ const resolvers = {
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
-const server = new ApolloServer({ typeDefs, resolvers });
+// const server = new ApolloServer({ typeDefs, resolvers });
 
+async function startApolloServer() {
+  const configurations = {
+    // Note: You may need sudo to run on port 443
+    production: { ssl: true, port: 4000, hostname: 'localhost' },
+    development: { ssl: false, port: 4000, hostname: 'localhost' },
+  };
+
+  const environment = process.env.NODE_ENV || 'production';
+  const config = configurations[environment];
+
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+  });
+  await server.start();
+
+  const app = express();
+  server.applyMiddleware({ app });
+
+  // Create the HTTPS or HTTP server, per configuration
+  let httpServer;
+  if (config.ssl) {
+    // Assumes certificates are in a .ssl folder off of the package root.
+    // Make sure these files are secured.
+    httpServer = https.createServer(
+      {
+        key: fs.readFileSync('/etc/ssl/private/wildcard_dnk_nl_2021.key'),
+        cert: fs.readFileSync('/etc/ssl/certs/wildcard_dnk_nl_2021.crt'),
+        requestCert: false,
+      },
+      app,
+    );
+  } else {
+    httpServer = http.createServer(app);
+  }
+
+  // const fs = require('fs');
+  // let options = {
+  //   key: fs.readFileSync('/etc/ssl/private/wildcard_dnk_nl_2021.key'),
+  //   cert: fs.readFileSync('/etc/ssl/certs/wildcard_dnk_nl_2021.crt'),
+  //   requestCert: false,
+  // };
+
+  // Mount Apollo middleware here.
+  // server.applyMiddleware({ app, path: '/specialUrl' });
+  // await new Promise(resolve => app.listen({ port: 4000 }, resolve));
+  // await new Promise(resolve => app.listen({ port: config.port }, resolve));
+  await new Promise(resolve => app.listen({ port: config.port }, resolve)); // https
+  console.log(
+    '🚀 Server ready at',
+    `http${config.ssl ? 's' : ''}://${config.hostname}:${config.port}${server.graphqlPath}`,
+  );
+
+  // Additional middleware can be mounted at this point to run before Apollo.
+  app.use(
+    cors({
+      origin: 'https://bios.dnk.nl',
+      credentials: true,
+    }),
+  );
+  return { server, app };
+}
+
+startApolloServer();
 // The `listen` method launches a web server.
-server.listen().then(({ url }) => {
-  console.log(`🚀  Server ready at ${url}`);
-});
+// server.listen().then(({ url }) => {
+//   console.log(`🚀  Server ready at ${url}`);
+// });

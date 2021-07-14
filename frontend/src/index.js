@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
 import logo from './assets/dnk-logo.png';
 import backgroundMovie from './assets/cinema.mp4';
 import './css/style.css';
@@ -9,7 +9,13 @@ import './css/style.css';
 import Movies from './Components/Movies';
 
 // Helper functions
-import { addTimesArray, combineStartTimes } from './util/helperFunction';
+import {
+  removePossibleDoubleValues,
+  addTimesArray,
+  combineStartTimes,
+  removeWhiteSpace,
+  SortArray,
+} from './util/helperFunction';
 
 // Connect to appollo server
 const client = new ApolloClient({
@@ -52,15 +58,15 @@ function App({ movies }) {
   console.log(movies);
 
   // 2) Initialize vars
-  let titles = [];
+  let titles = []; // all movie titles
+  let titlesTrimmedToLowerCase = []; // all movie titles trimmed + toLowerCase
   let ochtendTitles = [];
   let middagTitles = [];
   let avondTitles = [];
 
-  let unique = [];
-  let uniqueOchtend = [];
-  let uniqueMiddag = [];
-  let uniqueAvond = [];
+  let unique = []; // only unique movie titles
+
+  // let indexesOfDoubleValue; // indexes of posssible double values in titles, ochtendTitles, middagTitles, avondTitles
 
   // Time colors:
   const red = '#e73454';
@@ -69,6 +75,17 @@ function App({ movies }) {
 
   // 3) Movies is read only, make shallow copy of incoming data
   let films = [...movies];
+
+  /*
+  use to test removePossibleDoubleValues():
+  films.push({
+    eventType: 'Film',
+    id: '10088984',
+    start: '20:15',
+    times: [],
+    title: 'bLaCk      wIdoW',
+  });
+  */
 
   // 4) Sort films array by start times
   films = films.sort((a, b) => {
@@ -81,46 +98,64 @@ function App({ movies }) {
   let avond = [...films.filter(film => film.start > '18:00')];
 
   // 6) Push all titles into titles arrays
-  films.map(film => titles.push(film.title));
-  ochtend.map(film => ochtendTitles.push(film.title));
-  middag.map(film => middagTitles.push(film.title));
-  avond.map(film => avondTitles.push(film.title));
-
-  // 7) UNIQUE TITLES:
-  /* create arrays with unique titles only
-    [
-      0: "Pieter Konijn"
-      0: "Tom & Jerry"
-      0: "de Croods"
-    ] 
+  films.map(film => titlesTrimmedToLowerCase.push(removeWhiteSpace(film.title))); // array with all movie titles (tolowercase + trimmed)
+  films.map(film => titles.push(film.title)); // array with all movie titles, possible with double values (not lowercase or trimmed)
+  /*
+  let doublevalue1 = 'De Croods 2: Een Nieuw Begin';
+  let doubleValue2 = 'De Croods 2: Een nieuw Begin';
   */
-  unique = [...new Set(titles)];
-  uniqueOchtend = [...new Set(ochtendTitles)];
-  uniqueMiddag = [...new Set(middagTitles)];
-  uniqueAvond = [...new Set(avondTitles)];
 
-  // 8) ADD TIMES ARRAY AND CONVERT TO OBJECT:
-  addTimesArray(unique);
-  addTimesArray(uniqueOchtend);
-  addTimesArray(uniqueMiddag);
-  addTimesArray(uniqueAvond);
+  ochtend.map(film => ochtendTitles.push(film.title)); // (not lowercase or trimmed)
+  middag.map(film => middagTitles.push(film.title)); // (not lowercase or trimmed)
+  avond.map(film => avondTitles.push(film.title)); // (not lowercase or trimmed)
 
-  // 9) COMBINE START TIMES AND ADD ID:
-  combineStartTimes(films, unique);
-  combineStartTimes(ochtend, uniqueOchtend);
-  combineStartTimes(middag, uniqueMiddag);
-  combineStartTimes(avond, uniqueAvond);
+  // 7) UNIQUE:
+  /* create an array with unique titles only
+    [
+      0: "pieter konijn"
+      1: "tom & jerry"
+      2: "de croods"
+    ] 
+    */
+
+  unique = [...new Set(titlesTrimmedToLowerCase)]; // really unique array (tolowercase + trim)
+  console.log('Unique array toLowerCase + trimmed whitespace:');
+  console.log(unique);
+
+  // 8) removePossibleDoubleValues(reallyUniqueArray, arrayWithPossibleDoubles)
+  removePossibleDoubleValues(unique, titles);
+  removePossibleDoubleValues(unique, ochtendTitles);
+  removePossibleDoubleValues(unique, middagTitles);
+  removePossibleDoubleValues(unique, avondTitles);
+
+  // 9) ADD TIMES ARRAY AND CONVERT TO OBJECT:
+  addTimesArray(titles);
+  addTimesArray(ochtendTitles);
+  addTimesArray(middagTitles);
+  addTimesArray(avondTitles);
+
+  // 10) COMBINE START TIMES AND ADD ID:
+  combineStartTimes(films, titles);
+  combineStartTimes(ochtend, ochtendTitles);
+  combineStartTimes(middag, middagTitles);
+  combineStartTimes(avond, avondTitles);
+
+  // 11) RESORT ARRAY - FOR IF ORDER CHANGED BECAUSE OF removePossibleDoubleValues()
+  SortArray(titles);
+  SortArray(ochtendTitles);
+  SortArray(middagTitles);
+  SortArray(avondTitles);
 
   console.log('Processed data with all movies:');
-  console.log(unique);
+  console.log(titles);
   console.log('Processed data with morning movies:');
-  console.log(uniqueOchtend);
+  console.log(ochtendTitles);
   console.log('Processed data with daytime movies:');
-  console.log(uniqueMiddag);
+  console.log(middagTitles);
   console.log('Processed data with evening movies:');
-  console.log(uniqueAvond);
+  console.log(avondTitles);
 
-  // 10) TODO: IMPLEMENT SOME TIME BASED LOGIC
+  // 11) TODO: IMPLEMENT SOME TIME BASED LOGIC
   // check current time vs film start time, rerender?
   const t = new Date();
   let time = t.toLocaleTimeString().slice(0, 5);
@@ -153,17 +188,14 @@ function App({ movies }) {
   // Reload page every 4 hours        1s     1m   1h   4h
   setTimeout(() => window.location.reload(), 1000 * 60 * 60 * 4);
 
-  // 11) Render JSX:
+  // 12) Render JSX:
   return (
     <>
       <video id='myVideo' autoPlay loop muted>
         <source src={backgroundMovie} type='video/mp4' />
       </video>
 
-      <div
-        className='container'
-        // style={{ cursor: 'none' }}
-      >
+      <div className='container' style={{ cursor: 'none' }}>
         <header className='header'>
           <h1 className='heading-1'>Bioscoop</h1>
           <div className='header__date'>{datum}</div>
@@ -171,9 +203,9 @@ function App({ movies }) {
         <div className='zalen'></div>
 
         <div className='movies'>
-          <Movies moviesArray={uniqueOchtend} timeOfDay={'Ochtend'} timeColor={amber} />
-          <Movies moviesArray={uniqueMiddag} timeOfDay={'Middag'} timeColor={red} />
-          <Movies moviesArray={uniqueAvond} timeOfDay={'Avond'} timeColor={pink} />
+          <Movies moviesArray={ochtendTitles} timeOfDay={'Ochtend'} timeColor={amber} />
+          <Movies moviesArray={middagTitles} timeOfDay={'Middag'} timeColor={red} />
+          <Movies moviesArray={avondTitles} timeOfDay={'Avond'} timeColor={pink} />
         </div>
 
         <footer className='footer'>
