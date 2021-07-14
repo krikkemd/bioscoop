@@ -17,7 +17,7 @@ const Movies = ({ moviesArray, timeOfDay, timeColor }) => {
               className='movies__beganegrond-list-item-nummer'
               style={{ backgroundColor: timeColor }}>
               {[...movie.times].length > 1
-                ? [...movie.times].toString().replace(',', ' | ')
+                ? [...movie.times].toString().replaceAll(',', ' | ')
                 : [...movie.times]}
             </p>
           </li>
