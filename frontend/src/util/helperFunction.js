@@ -92,10 +92,15 @@ export const combineStartTimes = (filmsArray, uniqueArray) => {
     for (let el of uniqueArray) {
       if (removeWhiteSpace(film.title) === removeWhiteSpace(el.title)) {
         uniqueArray[uniqueArray.indexOf(el)].id = film.id;
-        uniqueArray[uniqueArray.indexOf(el)].times = [
-          ...uniqueArray[uniqueArray.indexOf(el)].times,
-          film.start,
-        ];
+        // Check if the start time already exists: 19:30 | 19:30. if it does, return ...times, else add the start time
+        uniqueArray[uniqueArray.indexOf(el)].times.includes(film.start)
+          ? (uniqueArray[uniqueArray.indexOf(el)].times = [
+              ...uniqueArray[uniqueArray.indexOf(el)].times,
+            ])
+          : (uniqueArray[uniqueArray.indexOf(el)].times = [
+              ...uniqueArray[uniqueArray.indexOf(el)].times,
+              film.start,
+            ]);
       }
     }
   }

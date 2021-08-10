@@ -37,6 +37,8 @@ client
           title
           start
           times
+          onsale
+          statusMessage
         }
       }
     `,
