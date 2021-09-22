@@ -32,9 +32,9 @@
     "eject": "react-scripts eject",
     "watch": "node-sass src/scss/main.scss src/css/style.css -w & webpack --watch",
     "watch:windows": "start node-sass src/scss/main.scss src/css/style.css -w && start webpack --watch",
-    "compile:sass": "node-sass scss/main.scss css/style.comp.css",
-    "prefix:css": "postcss --use autoprefixer -b \"last 10 versions\" css/style.comp.css -o css/style.prefix.css",
-    "compress:css": "node-sass css/style.prefix.css css/style.css --output-style compressed",
+    "compile:sass": "node-sass src/scss/main.scss src/css/style.comp.css",
+    "prefix:css": "postcss --use autoprefixer -b \"last 10 versions\" src/css/style.comp.css -o src/css/style.prefix.css",
+    "compress:css": "node-sass src/css/style.prefix.css src/css/style.css --output-style compressed",
     "build:css": "npm-run-all compile:sass prefix:css compress:css"
   },
   "eslintConfig": {
