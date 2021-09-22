@@ -60,16 +60,16 @@ const resolvers = {
         console.log(d.toLocaleTimeString());
         let today = d.toISOString().slice(0, 10);
         console.log(`todays date = ${today}`);
-        let dateFrom = '2021-07-14';
-        let dateUntil = '2021-07-14';
+        let dateFrom = '2021-09-26';
+        let dateUntil = '2021-09-26';
 
         const results = await fetch(
           `https://dnk.podiumnederland.nl/mtTicketingAPI/performanceList?key=${process.env.API_KEY}&dateFrom=${today}&dateUntil=${today}`,
         );
         const movies = await results.json();
-        // console.log(movies);
+        console.log(movies);
 
-        return movies.performances.map(movie => {
+        return movies.performances.filter(movie => {
           if (movie.eventType === 'Film') {
             movie.times = [];
             return movie;
