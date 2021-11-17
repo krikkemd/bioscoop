@@ -11,8 +11,9 @@ import Movies from './Components/Movies';
 // Helper functions
 import {
   removePossibleDoubleValues,
-  addTimesArray,
+  addTimesArrays,
   combineStartTimes,
+  combineEndTimes,
   removeWhiteSpace,
   SortArray,
 } from './util/helperFunction';
@@ -36,6 +37,7 @@ client
           eventType
           title
           start
+          end
           times
           onsale
           statusMessage
@@ -131,16 +133,22 @@ function App({ movies }) {
   removePossibleDoubleValues(unique, avondTitles);
 
   // 9) ADD TIMES ARRAY AND CONVERT TO OBJECT:
-  addTimesArray(titles);
-  addTimesArray(ochtendTitles);
-  addTimesArray(middagTitles);
-  addTimesArray(avondTitles);
+  addTimesArrays(titles);
+  addTimesArrays(ochtendTitles);
+  addTimesArrays(middagTitles);
+  addTimesArrays(avondTitles);
 
-  // 10) COMBINE START TIMES AND ADD ID:
+  // 10a) COMBINE START TIMES AND ADD ID (voor films die dubbel draaien):
   combineStartTimes(films, titles);
   combineStartTimes(ochtend, ochtendTitles);
   combineStartTimes(middag, middagTitles);
   combineStartTimes(avond, avondTitles);
+
+  // 10b) COMBINE END TIMES (voor films die dubbel draaien):
+  combineEndTimes(films, titles);
+  combineEndTimes(ochtend, ochtendTitles);
+  combineEndTimes(middag, middagTitles);
+  combineEndTimes(avond, avondTitles);
 
   // 11) RESORT ARRAY - FOR IF ORDER CHANGED BECAUSE OF removePossibleDoubleValues()
   SortArray(titles);

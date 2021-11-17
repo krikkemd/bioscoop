@@ -56,16 +56,16 @@ export function removePossibleDoubleValues(reallyUniqueArray, arrayWithPossibleD
   }
 }
 
-// 9) ADD TIMES ARRAY AND CONVERT TO OBJECT:
-/* convert arrays with unique titles to objects, and add times array field: 
+// 9) ADD TIMES ARRAYS AND CONVERT TO OBJECT:
+/* convert arrays with unique titles to objects, and add the startTimes, and endTimes array fields: 
     [
-      0: {title: "Pieter Konijn", times: []}
-      1: {title: "Tom & Jerry", times: []}
-      2: {title: "De Croods", times: []}
+      0: {title: "Pieter Konijn", startTimes: [], endTimes: []}
+      1: {title: "Tom & Jerry", startTimes: [], endTimes: []}
+      2: {title: "De Croods", startTimes: [], endTimes: []}
     ]
   */
-export const addTimesArray = uniqueArray =>
-  uniqueArray.map((el, i, array) => (array[i] = { title: el, times: [] }));
+export const addTimesArrays = uniqueArray =>
+  uniqueArray.map((el, i, array) => (array[i] = { title: el, startTimes: [], endTimes: [] }));
 
 // 10) COMBINE START TIMES AND ADD ID
 /* Every time film.title matches unique film title, add the start time to the unique film times array, also add ID
@@ -73,33 +73,58 @@ export const addTimesArray = uniqueArray =>
       0: {
           id: "10087691",
           title: "Pieter Konijn", 
-          times: ["13:00"]
+          startTimes: ["13:00"],
+          endTimes: ["14:15"]
         }
       1: {
           id: "10087693",
           title: "Tom & Jerry", 
-          times: ["13:00"]
+          startTimes: ["13:00"],
+          endTimes: ["14:15"]
+
         }
       2: {
           id: "10087643",
           title: "De Croods", 
-          times: ["13:00", "15:45"]
+          startTimes: ["13:00", "15:45"],
+          endTimes: ["14:15", "17:03"]
         }
     ] 
   */
+
+// Combineert de starttijden van een film die "dubbel" draait, bijvoorbeeld om 19:00 en om 21:30
 export const combineStartTimes = (filmsArray, uniqueArray) => {
   for (let film of filmsArray) {
     for (let el of uniqueArray) {
       if (removeWhiteSpace(film.title) === removeWhiteSpace(el.title)) {
         uniqueArray[uniqueArray.indexOf(el)].id = film.id;
-        // Check if the start time already exists: 19:30 | 19:30. if it does, return ...times, else add the start time
-        uniqueArray[uniqueArray.indexOf(el)].times.includes(film.start)
-          ? (uniqueArray[uniqueArray.indexOf(el)].times = [
-              ...uniqueArray[uniqueArray.indexOf(el)].times,
+        // Check if the start time already exists for the current movie: 19:30 | 19:30. if it does, return ...times, else add the start time
+        uniqueArray[uniqueArray.indexOf(el)].startTimes.includes(film.start)
+          ? (uniqueArray[uniqueArray.indexOf(el)].startTimes = [
+              ...uniqueArray[uniqueArray.indexOf(el)].startTimes,
             ])
-          : (uniqueArray[uniqueArray.indexOf(el)].times = [
-              ...uniqueArray[uniqueArray.indexOf(el)].times,
+          : (uniqueArray[uniqueArray.indexOf(el)].startTimes = [
+              ...uniqueArray[uniqueArray.indexOf(el)].startTimes,
               film.start,
+            ]);
+      }
+    }
+  }
+};
+
+// Combineert de eindtijden van een film die "dubbel" draait, en die bijvoorbeeld eindigt om 21:30 en om 00:23
+export const combineEndTimes = (filmsArray, uniqueArray) => {
+  for (let film of filmsArray) {
+    for (let el of uniqueArray) {
+      if (removeWhiteSpace(film.title) === removeWhiteSpace(el.title)) {
+        // Check if the end time already exists for the current movie: 19:30 | 19:30. if it does, return ...times, else add the end time
+        uniqueArray[uniqueArray.indexOf(el)].endTimes.includes(film.end)
+          ? (uniqueArray[uniqueArray.indexOf(el)].endTimes = [
+              ...uniqueArray[uniqueArray.indexOf(el)].endTimes,
+            ])
+          : (uniqueArray[uniqueArray.indexOf(el)].endTimes = [
+              ...uniqueArray[uniqueArray.indexOf(el)].endTimes,
+              film.end,
             ]);
       }
     }
@@ -109,7 +134,7 @@ export const combineStartTimes = (filmsArray, uniqueArray) => {
 // 11) RESORT ARRAY - FOR IF ORDER CHANGED BECAUSE OF removePossibleDoubleValues()
 export function SortArray(array) {
   array.sort((a, b) => {
-    return a.times[0] < b.times[0] ? -1 : a.times[0] > b.times[0] ? 1 : 0;
+    return a.startTimes[0] < b.startTimes[0] ? -1 : a.startTimes[0] > b.startTimes[0] ? 1 : 0;
   });
 }
 
