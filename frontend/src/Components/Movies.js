@@ -2,17 +2,23 @@ import React, { useEffect, useState } from 'react';
 import '../css/style.css';
 import '../css/App.css';
 
-const Movies = ({ moviesArray, timeOfDay, timeColor }) => {
+const Movies = ({ moviesArray, timeOfDay, startTimeColor, endTimeColor }) => {
   const [displayEndTimes, setDisplayEndTimes] = useState(false);
+  console.log(timeOfDay);
+  console.log(moviesArray);
 
   const changeDisplayTimes = () => {
     setTimeout(() => {
       setDisplayEndTimes(!displayEndTimes);
-    }, 5000);
+    }, 4000);
   };
 
   useEffect(() => {
     changeDisplayTimes();
+    console.log('change time display');
+    // return function cleanup() {
+    //   clearTimeout(changeDisplayTimes);
+    // };
   }, [displayEndTimes]);
 
   return (
@@ -23,11 +29,11 @@ const Movies = ({ moviesArray, timeOfDay, timeColor }) => {
             <span className='movie-lighter'>Filmprogramma | {timeOfDay}</span>
             {/* Display Start or End */}
             {displayEndTimes !== true ? (
-              <span style={{ color: timeColor }} className={'p-van-tot'}>
+              <span style={{ color: startTimeColor }} className={`p-van-tot`}>
                 Aanvang
               </span>
             ) : (
-              <span style={{ color: timeColor }} className={'p-van-tot'}>
+              <span style={{ color: endTimeColor }} className={`p-van-tot`}>
                 Einde
               </span>
             )}
@@ -42,7 +48,7 @@ const Movies = ({ moviesArray, timeOfDay, timeColor }) => {
             {displayEndTimes !== true ? (
               <p
                 className='movies__beganegrond-list-item-nummer'
-                style={{ backgroundColor: timeColor }}>
+                style={{ backgroundColor: startTimeColor }}>
                 {[...movie.startTimes].length > 1
                   ? [...movie.startTimes].toString().replaceAll(',', ' | ')
                   : [...movie.startTimes]}
@@ -51,7 +57,7 @@ const Movies = ({ moviesArray, timeOfDay, timeColor }) => {
               // Display movie end times
               <p
                 className='movies__beganegrond-list-item-nummer'
-                style={{ backgroundColor: timeColor }}>
+                style={{ backgroundColor: endTimeColor }}>
                 {[...movie.endTimes].length > 1
                   ? [...movie.endTimes].toString().replaceAll(',', ' | ')
                   : [...movie.endTimes]}

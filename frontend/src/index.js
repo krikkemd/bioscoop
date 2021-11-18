@@ -77,6 +77,9 @@ function App({ movies }) {
   const red = '#e73454';
   const pink = '#e1617a';
   const amber = '#bd2f46';
+  const darkRed = '#A1243A';
+  const darkPink = '#9D4355';
+  const darkAmber = '#842031';
 
   // 3) Movies is read only, make shallow copy of incoming data
   let films = [...movies];
@@ -206,19 +209,34 @@ function App({ movies }) {
         <source src={backgroundMovie} type='video/mp4' />
       </video>
 
-      <div className='container' style={{ cursor: 'none' }}>
+      <div className='container'>
         <header className='header'>
           <h1 className='heading-1'>Bioscoop</h1>
           <div className='header__date'>
-            {datum} <Clock />
+            {datum} &mdash; <Clock />
           </div>
         </header>
         <div className='zalen'></div>
 
         <div className='movies'>
-          <Movies moviesArray={ochtendTitles} timeOfDay={'Ochtend'} timeColor={amber} />
-          <Movies moviesArray={middagTitles} timeOfDay={'Middag'} timeColor={red} />
-          <Movies moviesArray={avondTitles} timeOfDay={'Avond'} timeColor={pink} />
+          <Movies
+            moviesArray={ochtendTitles}
+            timeOfDay={'Ochtend'}
+            startTimeColor={amber}
+            endTimeColor={darkAmber}
+          />
+          <Movies
+            moviesArray={middagTitles}
+            timeOfDay={'Middag'}
+            startTimeColor={red}
+            endTimeColor={darkRed}
+          />
+          <Movies
+            moviesArray={avondTitles}
+            timeOfDay={'Avond'}
+            startTimeColor={pink}
+            endTimeColor={darkPink}
+          />
         </div>
 
         <footer className='footer'>
