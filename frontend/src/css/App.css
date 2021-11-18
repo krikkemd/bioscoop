@@ -28,6 +28,18 @@
   color: #61dafb;
 }
 
+.flex {
+  display: flex;
+}
+
+.movie-lighter {
+  flex: 1;
+}
+
+.p-van-tot {
+  font-weight: lighter;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

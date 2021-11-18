@@ -66,7 +66,7 @@ const resolvers = {
         const results = await fetch(
           `https://dnk.podiumnederland.nl/mtTicketingAPI/performanceList?key=${
             process.env.API_KEY
-          }&dateFrom=${'2021-11-20'}&dateUntil=${'2021-11-20'}`,
+          }&dateFrom=${'2021-11-21'}&dateUntil=${'2021-11-21'}`,
         );
         const movies = await results.json();
         // console.log(movies);
