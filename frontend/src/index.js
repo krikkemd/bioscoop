@@ -7,6 +7,7 @@ import './css/style.css';
 
 // Components
 import Movies from './Components/Movies';
+import Clock from './Components/Clock';
 
 // Helper functions
 import {
@@ -208,7 +209,9 @@ function App({ movies }) {
       <div className='container' style={{ cursor: 'none' }}>
         <header className='header'>
           <h1 className='heading-1'>Bioscoop</h1>
-          <div className='header__date'>{datum}</div>
+          <div className='header__date'>
+            {datum} <Clock />
+          </div>
         </header>
         <div className='zalen'></div>
 
