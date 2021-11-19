@@ -15,7 +15,6 @@ const Movies = ({ moviesArray, timeOfDay, startTimeColor, endTimeColor }) => {
 
   useEffect(() => {
     changeDisplayTimes();
-    console.log('change time display');
     // return function cleanup() {
     //   clearTimeout(changeDisplayTimes);
     // };

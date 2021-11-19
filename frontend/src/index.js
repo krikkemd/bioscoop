@@ -202,6 +202,22 @@ function App({ movies }) {
   // Reload page every 4 hours        1s     1m   1h   4h
   setTimeout(() => window.location.reload(), 1000 * 60 * 60 * 4);
 
+  // // Display times
+  // const [displayEndTimes, setDisplayEndTimes] = useState(false);
+
+  // const changeDisplayTimes = () => {
+  //   setTimeout(() => {
+  //     setDisplayEndTimes(!displayEndTimes);
+  //   }, 4000);
+  // };
+
+  // useEffect(() => {
+  //   changeDisplayTimes();
+  //   // return function cleanup() {
+  //   //   clearTimeout(changeDisplayTimes);
+  //   // };
+  // }, [displayEndTimes]);
+
   // 12) Render JSX:
   return (
     <>
@@ -209,16 +225,24 @@ function App({ movies }) {
         <source src={backgroundMovie} type='video/mp4' />
       </video>
 
-      <div className='container'>
+      <div className='container' style={{ cursor: 'none' }}>
         <header className='header'>
           <h1 className='heading-1'>Bioscoop</h1>
           <div className='header__date'>
-            {datum} &mdash; <Clock />
+            {datum} - <Clock />
           </div>
         </header>
         <div className='zalen'></div>
 
         <div className='movies'>
+          {/* <span className='flex'>
+            <div className='movie-lighter'></div>
+            {displayEndTimes !== true ? (
+              <span className={`p-van-tot`}>Aanvang</span>
+            ) : (
+              <span className={`p-van-tot`}>Einde</span>
+            )}
+          </span> */}
           <Movies
             moviesArray={ochtendTitles}
             timeOfDay={'Ochtend'}

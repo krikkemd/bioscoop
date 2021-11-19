@@ -34,16 +34,15 @@
 
 .movie-lighter {
   flex: 1;
+  /* position: absolute; */
 }
 
-.p-van-tot-ochtend {
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.p-van-tot {
+  /* position: relative; */
+  /* left: 91%; */
+  /* top: 90px; */
+  font-weight: lighter;
+  font-size: 3rem;
+  text-transform: uppercase;
+  color: #008bbc;
 }
