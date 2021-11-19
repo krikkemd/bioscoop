@@ -172,7 +172,7 @@ function App({ movies }) {
   // 11) TODO: IMPLEMENT SOME TIME BASED LOGIC
   // check current time vs film start time, rerender?
   const t = new Date();
-  let time = t.toLocaleTimeString().slice(0, 5);
+  let time = t.toLocaleTimeString('nl-NL').slice(0, 5);
   // time = '15:30';
   console.log(`time = ${time}`);
 

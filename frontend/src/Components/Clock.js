@@ -13,7 +13,7 @@ const Clock = () => {
     };
   }, []);
 
-  return <span>{date.toLocaleTimeString()}</span>;
+  return <span>{date.toLocaleTimeString('nl-NL')}</span>;
 };
 
 export default Clock;
